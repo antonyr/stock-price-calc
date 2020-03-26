@@ -110,9 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text('Normalize'),
                       color: Color.fromRGBO(0, 64, 255, 1),
                       onPressed: () {
-                        this.purchasableQuantity = findPurchasableQuantity(availableAmountController, currentUnitPriceController);
-                        this.normalizedPrice = findNormalizedPrice(sharesCountController, averageCostController, currentUnitPriceController, purchasableQuantity);
-
+                        setState(() {
+                          this.purchasableQuantity = findPurchasableQuantity(availableAmountController, currentUnitPriceController);
+                          this.normalizedPrice = findNormalizedPrice(sharesCountController, averageCostController, currentUnitPriceController, purchasableQuantity);
+                        });
                       },
                     ),
                     RaisedButton(
