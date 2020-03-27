@@ -1,12 +1,17 @@
 import 'package:flutter/widgets.dart';
 
-findNormalizedPrice(TextEditingController shareCountController, TextEditingController averageCostController, TextEditingController currentUnitPrice, purchasableQuantity) {
+findNormalizedPrice(
+    TextEditingController shareCountController,
+    TextEditingController averageCostController,
+    TextEditingController currentUnitPrice,
+    purchasableQuantity) {
   var currentStockPrice = double.parse(currentUnitPrice.text);
   var purchasedShares = int.parse(shareCountController.text);
   var averagePrice = double.parse(averageCostController.text);
   var totalPrice = averagePrice * purchasedShares;
   var newlySpentPrice = purchasableQuantity * currentStockPrice;
-  var result = (totalPrice + newlySpentPrice)/(purchasableQuantity + purchasedShares);
+  var result =
+      (totalPrice + newlySpentPrice) / (purchasableQuantity + purchasedShares);
   return result.toStringAsFixed(2);
 }
 
@@ -16,7 +21,8 @@ findPurchasableQuantity(availableAmountController, currentUnitPriceController) {
   return availableAmount ~/ currentStockPrice;
 }
 
-reset(TextEditingController sharesCountController, totalPriceController, currentUnitPriceController, availableAmountController) {
+reset(TextEditingController sharesCountController, totalPriceController,
+    currentUnitPriceController, availableAmountController) {
   sharesCountController.clear();
   totalPriceController.clear();
   currentUnitPriceController.clear();
