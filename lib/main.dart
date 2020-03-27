@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: white,
           brightness: Brightness.dark,
-          cardColor: white,
+          cardColor: Colors.transparent,
           inputDecorationTheme: InputDecorationTheme(
             labelStyle: TextStyle(color: Colors.white),
             focusedBorder:
@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     )
                   ],
                 )),
-                SizedBox(height: 30.0),
+                SizedBox(height: 20.0),
                 buildResult(),
               ],
             ),
@@ -185,16 +185,25 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Text(
                   "You can purchase a maximum of ${this.purchasableQuantity.toString()} shares",
-                  style: TextStyle(fontSize: 16.0, color: Color(0xFF7F6F7E))),
+                  style: TextStyle(fontSize: 16.0)),
               Text(
                   "You will have a normalized price of ${this.normalizedPrice}",
-                  style: TextStyle(fontSize: 16.0, color: Color(0xFF7F6F7E)))
+                  style: TextStyle(fontSize: 16.0))
             ],
           ),
         ),
       );
     } else {
-      return Card();
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              Text("Your results will be displayed here"),
+            ],
+          ),
+        ),
+      );
     }
   }
 }
