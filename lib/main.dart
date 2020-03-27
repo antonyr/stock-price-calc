@@ -34,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  ScrollController _scrollController = new ScrollController();
   var sharesCountController = TextEditingController();
   var averageCostController = TextEditingController();
   var currentUnitPriceController = TextEditingController();
@@ -48,7 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("assets/images/background.jpg"), fit: BoxFit.fill)),
+              image: AssetImage("assets/images/background.jpg"),
+              fit: BoxFit.fill)),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF7F6F7E),
@@ -61,109 +63,112 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 20,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  focusNode: sharesCountNode,
+                  controller: sharesCountController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly
+                  ],
+                  decoration: InputDecoration(
+                    labelText: 'Number of Shares you already have',
                   ),
-                  TextFormField(
-                    focusNode: sharesCountNode,
-                    controller: sharesCountController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Number of Shares you already have',
-                    ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  controller: averageCostController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Average cost of the share',
                   ),
-                  SizedBox(
-                    height: 20,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  controller: currentUnitPriceController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Current Share Price',
                   ),
-                  TextFormField(
-                    controller: averageCostController,
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      labelText: 'Average cost of the share',
-                    ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  controller: availableAmountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'How much money do you have?',
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: currentUnitPriceController,
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      labelText: 'Current Share Price',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: availableAmountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'How much money do you have?',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                      child: ButtonBar(
-                    children: <Widget>[
-                      RaisedButton(
-                        child: Text('Normalize'),
-                        elevation: 5.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(10.0)),
-                        color: Colors.green,
-                        onPressed: () {
-                          setState(() {
-                            this._showResult = true;
-                            this.purchasableQuantity = findPurchasableQuantity(
-                                availableAmountController,
-                                currentUnitPriceController);
-                            this.normalizedPrice = findNormalizedPrice(
-                                sharesCountController,
-                                averageCostController,
-                                currentUnitPriceController,
-                                purchasableQuantity);
-                          });
-                        },
-                      ),
-                      RaisedButton(
-                        color: Colors.grey,
-                        child: Text('Clear',
-                            style: TextStyle(color: Colors.white)),
-                        elevation: 5.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(10.0)),
-                        onPressed: () {
-                          setState(() {
-                            this._showResult = false;
-                          });
-                          reset(
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                    child: ButtonBar(
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text('Normalize'),
+                      elevation: 5.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(10.0)),
+                      color: Colors.green,
+                      onPressed: () {
+                        setState(() {
+                          this._showResult = true;
+                          this.purchasableQuantity = findPurchasableQuantity(
+                              availableAmountController,
+                              currentUnitPriceController);
+                          this.normalizedPrice = findNormalizedPrice(
                               sharesCountController,
                               averageCostController,
                               currentUnitPriceController,
-                              availableAmountController);
-                          sharesCountNode.requestFocus();
-                        },
-                      )
-                    ],
-                  )),
-                  SizedBox(height: 30.0),
-                  buildResult(),
-                ],
-              ),
+                              purchasableQuantity);
+                        });
+                        var scrollPosition = _scrollController.position;
+                        _scrollController.animateTo(
+                          scrollPosition.maxScrollExtent,
+                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 100),
+                        );
+                      },
+                    ),
+                    RaisedButton(
+                      color: Colors.grey,
+                      child:
+                          Text('Clear', style: TextStyle(color: Colors.white)),
+                      elevation: 5.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(10.0)),
+                      onPressed: () {
+                        setState(() {
+                          this._showResult = false;
+                        });
+                        reset(
+                            sharesCountController,
+                            averageCostController,
+                            currentUnitPriceController,
+                            availableAmountController);
+                        sharesCountNode.requestFocus();
+                      },
+                    )
+                  ],
+                )),
+                SizedBox(height: 30.0),
+                buildResult(),
+              ],
             ),
           ),
         ),
