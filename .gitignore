@@ -37,3 +37,18 @@ lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# Android deploy api keys
+android/key.properties
+android/serviceAccount.json
+android/app/francium.jks
+
+# Ios Deploy api keys
+*.certSigningRequest
+*.cer
+*.p12
+*.mobileprovision
+
+# Ios build file:
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
