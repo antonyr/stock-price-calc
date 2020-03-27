@@ -14,9 +14,6 @@
 *.ipr
 *.iws
 .idea/
-android/
-.vscode/
-test/.test_coverage.dart
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -38,3 +35,18 @@ lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# Android deploy api keys
+android/key.properties 
+android/serviceAccount.json
+android/app/francium.jks
+
+# Ios Deploy api keys
+*.certSigningRequest
+*.cer
+*.p12
+*.mobileprovision
+
+# Ios build file:
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
