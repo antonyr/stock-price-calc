@@ -242,6 +242,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           setState(() {
                             this._showResult = false;
+                            autoValidate = false;
+                            _formKey.currentState.reset();
                           });
                           reset(
                               sharesCountController,
