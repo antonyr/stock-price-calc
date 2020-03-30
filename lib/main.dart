@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'const/material_white.dart';
 import 'events.dart';
@@ -9,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Stock Calculator',
       theme: ThemeData(
           primarySwatch: white,
           brightness: Brightness.dark,
@@ -39,6 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _formKey = GlobalKey<FormState>();
   ScrollController _scrollController = new ScrollController();
   var sharesCountController = TextEditingController();
   var averageCostController = TextEditingController();
@@ -48,9 +50,13 @@ class _MyHomePageState extends State<MyHomePage> {
   var purchasableQuantity = 0;
   var normalizedPrice = '';
   bool _showResult = false;
-  final _formKey = GlobalKey<FormState>();
-  String sharesOrMoney = 'How many shares you wanna buy';
   bool autoValidate = false;
+  int _selectedIndex = 0;
+  List<String> dropDownValues = [
+    'How many shares you wanna buy?',
+    'How much money you got?'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -140,39 +146,69 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Container(
                     height: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    child: DropdownButton<String>(
-                      value: sharesOrMoney,
-                      icon: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 4),
-                          child: Icon(Icons.arrow_drop_down_circle)),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      underline: Container(
-                        height: 0,
-                      ),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          sharesOrMoney = newValue;
-                        });
-                      },
-                      items: <String>[
-                        'How many shares you wanna buy',
-                        'How much money you got'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.white54,
-                          width: 0.8,
-                        )),
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: Colors.white54,
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        CupertinoButton(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 15),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    dropDownValues[_selectedIndex],
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    child: Icon(
+                                      Icons.arrow_drop_down_circle,
+                                      size: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: 120.0,
+                                      child: CupertinoPicker(
+                                          itemExtent: 32.0,
+                                          scrollController:
+                                              FixedExtentScrollController(
+                                                  initialItem: _selectedIndex),
+                                          backgroundColor: Color(0xFF7F6F7E),
+                                          onSelectedItemChanged: (int index) {
+                                            setState(() {
+                                              _selectedIndex = index;
+                                            });
+                                          },
+                                          children: new List<Widget>.generate(
+                                              dropDownValues.length,
+                                              (int index) {
+                                            return new Center(
+                                              child: new Text(
+                                                  dropDownValues[index],
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            );
+                                          })),
+                                    );
+                                  });
+                            }),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 30,
@@ -181,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller: availableAmountController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: sharesOrMoney,
+                      labelText: dropDownValues[_selectedIndex],
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
@@ -210,19 +246,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                           if (_formKey.currentState.validate()) {
                             setState(() {
-                              if(sharesOrMoney.contains('money')) {
+                              if (dropDownValues[_selectedIndex]
+                                  .contains('money')) {
                                 this.purchasableQuantity =
                                     findPurchasableQuantity(
                                         availableAmountController,
                                         currentUnitPriceController);
                               } else {
-                                this.purchasableQuantity = int.parse(availableAmountController.text);
+                                this.purchasableQuantity =
+                                    int.parse(availableAmountController.text);
                               }
                               this.normalizedPrice = findNormalizedPrice(
-                                    sharesCountController,
-                                    averageCostController,
-                                    currentUnitPriceController,
-                                    purchasableQuantity);
+                                  sharesCountController,
+                                  averageCostController,
+                                  currentUnitPriceController,
+                                  purchasableQuantity);
                             });
                             var scrollPosition = _scrollController.position;
                             _scrollController.animateTo(
