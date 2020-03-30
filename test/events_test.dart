@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:try_app/events.dart';
+import 'package:stocker/events.dart';
 import 'package:mockito/mockito.dart';
 
 class MockTextController extends Mock implements TextEditingController {}

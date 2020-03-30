@@ -1,4 +1,4 @@
-package com.example.try_app
+package com.francium.stocker
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

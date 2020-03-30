@@ -246,6 +246,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             autoValidate = false;
                             _formKey.currentState.reset();
                           });
+                          reset(
+                              sharesCountController,
+                              averageCostController,
+                              currentUnitPriceController,
+                              availableAmountController);
                           sharesCountNode.requestFocus();
                         },
                       )
