@@ -19,6 +19,11 @@ class MyApp extends StatelessWidget {
             focusedBorder:
                 OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
             border: OutlineInputBorder(borderSide: BorderSide()),
+//            errorStyle: TextStyle(color: Colors.red.shade900),
+//            errorBorder: OutlineInputBorder(
+//                borderSide: BorderSide(color: Colors.red.shade900)),
+//            focusedErrorBorder: OutlineInputBorder(
+//                borderSide: BorderSide(color: Colors.amberAccent)),
           )),
       home: MyHomePage(title: 'Stock Price Calculator'),
     );
@@ -43,7 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var purchasableQuantity = 0;
   var normalizedPrice = '';
   bool _showResult = false;
-
+  final _formKey = GlobalKey<FormState>();
+  String sharesToBuy = 'How many shares you wanna buy';
+  bool autoValidate = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,109 +73,190 @@ class _MyHomePageState extends State<MyHomePage> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  focusNode: sharesCountNode,
-                  controller: sharesCountController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    WhitelistingTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                    labelText: 'Number of Shares you already have',
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: averageCostController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: 'Average cost of the share',
+                  TextFormField(
+                    focusNode: sharesCountNode,
+                    controller: sharesCountController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      labelText: 'Number of Shares you already have',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Enter some value";
+                      }
+                      return null;
+                    },
+                    autovalidate: autoValidate,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: currentUnitPriceController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: 'Current Share Price',
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: availableAmountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'How much money do you have?',
+                  TextFormField(
+                    controller: averageCostController,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: 'Average cost of the share',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Enter some value";
+                      }
+                      return null;
+                    },
+                    autovalidate: autoValidate,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                    child: ButtonBar(
-                  children: <Widget>[
-                    RaisedButton(
-                      child: Text('Normalize'),
-                      elevation: 5.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(10.0)),
-                      color: Colors.green,
-                      onPressed: () {
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: currentUnitPriceController,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: 'Current Share Price',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Enter some value";
+                      }
+                      return null;
+                    },
+                    autovalidate: autoValidate,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: availableAmountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'How much money do you have?',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Enter some value";
+                      }
+                      return null;
+                    },
+                    autovalidate: autoValidate,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: DropdownButton<String>(
+                      value: sharesToBuy,
+                      icon: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Icon(Icons.arrow_drop_down_circle)),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      underline: Container(
+                        height: 0,
+                      ),
+                      onChanged: (String newValue) {
                         setState(() {
-                          this._showResult = true;
-                          this.purchasableQuantity = findPurchasableQuantity(
-                              availableAmountController,
-                              currentUnitPriceController);
-                          this.normalizedPrice = findNormalizedPrice(
+                          sharesToBuy = newValue;
+                        });
+                      },
+                      items: <String>[
+                        'How many shares you wanna buy',
+                        'How much money you got'
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Colors.white54,
+                          width: 0.8,
+                        )),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                      child: ButtonBar(
+                    children: <Widget>[
+                      RaisedButton(
+                        child: Text('Normalize'),
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(10.0)),
+                        color: Colors.green,
+                        onPressed: () {
+                          setState(() {
+                            autoValidate = true;
+                          });
+                          if (_formKey.currentState.validate()) {
+                            setState(() {
+                              this._showResult = true;
+                              this.purchasableQuantity =
+                                  findPurchasableQuantity(
+                                      availableAmountController,
+                                      currentUnitPriceController);
+                              this.normalizedPrice = findNormalizedPrice(
+                                  sharesCountController,
+                                  averageCostController,
+                                  currentUnitPriceController,
+                                  purchasableQuantity);
+                            });
+                            var scrollPosition = _scrollController.position;
+                            _scrollController.animateTo(
+                              scrollPosition.maxScrollExtent,
+                              curve: Curves.easeOut,
+                              duration: const Duration(milliseconds: 100),
+                            );
+                          }
+                        },
+                      ),
+                      RaisedButton(
+                        color: Colors.grey,
+                        child: Text('Clear',
+                            style: TextStyle(color: Colors.white)),
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(10.0)),
+                        onPressed: () {
+                          setState(() {
+                            this._showResult = false;
+                          });
+                          reset(
                               sharesCountController,
                               averageCostController,
                               currentUnitPriceController,
-                              purchasableQuantity);
-                        });
-                        var scrollPosition = _scrollController.position;
-                        _scrollController.animateTo(
-                          scrollPosition.maxScrollExtent,
-                          curve: Curves.easeOut,
-                          duration: const Duration(milliseconds: 100),
-                        );
-                      },
-                    ),
-                    RaisedButton(
-                      color: Colors.grey,
-                      child:
-                          Text('Clear', style: TextStyle(color: Colors.white)),
-                      elevation: 5.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(10.0)),
-                      onPressed: () {
-                        setState(() {
-                          this._showResult = false;
-                        });
-                        reset(
-                            sharesCountController,
-                            averageCostController,
-                            currentUnitPriceController,
-                            availableAmountController);
-                        sharesCountNode.requestFocus();
-                      },
-                    )
-                  ],
-                )),
-                SizedBox(height: 20.0),
-                buildResult(),
-              ],
+                              availableAmountController);
+                          sharesCountNode.requestFocus();
+                        },
+                      )
+                    ],
+                  )),
+                  SizedBox(height: 20.0),
+                  buildResult(),
+                ],
+              ),
             ),
           ),
         ),
