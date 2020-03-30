@@ -24,6 +24,23 @@ void main() {
   });
 
   test(
+      'findNormalizedPrice should return normalized price after purchasing number of stocks',
+      () {
+    var sharesCountController = MockTextController();
+    var averageCostController = MockTextController();
+    var currentUnitPriceController = MockTextController();
+
+    when(sharesCountController.text).thenReturn('5');
+    when(averageCostController.text).thenReturn('25.0');
+    when(currentUnitPriceController.text).thenReturn('20');
+
+    var normalizedPrice = findNormalizedPrice(sharesCountController,
+        averageCostController, currentUnitPriceController, 50);
+
+    expect(normalizedPrice, equals('20.45'));
+  });
+
+  test(
       'findPurchasableQuantity should return how many stocks can we buy with the given amount',
       () {
     var availableAmountController = MockTextController();

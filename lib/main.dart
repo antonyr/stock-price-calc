@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var normalizedPrice = '';
   bool _showResult = false;
   final _formKey = GlobalKey<FormState>();
-  String sharesToBuy = 'How many shares you wanna buy';
+  String sharesOrMoney = 'How many shares you wanna buy';
   bool autoValidate = false;
   @override
   Widget build(BuildContext context) {
@@ -138,28 +138,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(
                     height: 20,
                   ),
-                  TextFormField(
-                    controller: availableAmountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'How much money do you have?',
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Enter some value";
-                      }
-                      return null;
-                    },
-                    autovalidate: autoValidate,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
                   Container(
                     height: 60,
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     child: DropdownButton<String>(
-                      value: sharesToBuy,
+                      value: sharesOrMoney,
                       icon: Container(
                           padding: EdgeInsets.symmetric(horizontal: 4),
                           child: Icon(Icons.arrow_drop_down_circle)),
@@ -171,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       onChanged: (String newValue) {
                         setState(() {
-                          sharesToBuy = newValue;
+                          sharesOrMoney = newValue;
                         });
                       },
                       items: <String>[
@@ -194,8 +177,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(
                     height: 30,
                   ),
+                  TextFormField(
+                    controller: availableAmountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: sharesOrMoney,
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Enter some value";
+                      }
+                      return null;
+                    },
+                    autovalidate: autoValidate,
+                  ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   Center(
                       child: ButtonBar(
@@ -209,19 +206,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           setState(() {
                             autoValidate = true;
+                            this._showResult = true;
                           });
                           if (_formKey.currentState.validate()) {
                             setState(() {
-                              this._showResult = true;
-                              this.purchasableQuantity =
-                                  findPurchasableQuantity(
-                                      availableAmountController,
-                                      currentUnitPriceController);
+                              if(sharesOrMoney.contains('money')) {
+                                this.purchasableQuantity =
+                                    findPurchasableQuantity(
+                                        availableAmountController,
+                                        currentUnitPriceController);
+                              } else {
+                                this.purchasableQuantity = int.parse(availableAmountController.text);
+                              }
                               this.normalizedPrice = findNormalizedPrice(
-                                  sharesCountController,
-                                  averageCostController,
-                                  currentUnitPriceController,
-                                  purchasableQuantity);
+                                    sharesCountController,
+                                    averageCostController,
+                                    currentUnitPriceController,
+                                    purchasableQuantity);
                             });
                             var scrollPosition = _scrollController.position;
                             _scrollController.animateTo(
