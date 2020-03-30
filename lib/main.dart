@@ -52,10 +52,15 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _showResult = false;
   bool autoValidate = false;
   int _selectedIndex = 0;
-  List<String> dropDownValues = [
+
+  final List<String> dropDownValues = [
+    'How much money you got?',
     'How many shares you wanna buy?',
-    'How much money you got?'
   ];
+  final Map<int, Widget> dropDownWidgets = const <int, Widget>{
+    0: Text('   Money   ', style: TextStyle(color: Colors.white)),
+    1: Text('   Share   ', style: TextStyle(color: Colors.white)),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -154,59 +159,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: 0.8,
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        CupertinoButton(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 15),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    dropDownValues[_selectedIndex],
-                                  ),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: Icon(
-                                      Icons.arrow_drop_down_circle,
-                                      size: 24,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      height: 120.0,
-                                      child: CupertinoPicker(
-                                          itemExtent: 32.0,
-                                          scrollController:
-                                              FixedExtentScrollController(
-                                                  initialItem: _selectedIndex),
-                                          backgroundColor: Color(0xFF7F6F7E),
-                                          onSelectedItemChanged: (int index) {
-                                            setState(() {
-                                              _selectedIndex = index;
-                                            });
-                                          },
-                                          children: new List<Widget>.generate(
-                                              dropDownValues.length,
-                                              (int index) {
-                                            return new Center(
-                                              child: new Text(
-                                                  dropDownValues[index],
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            );
-                                          })),
-                                    );
-                                  });
-                            }),
+                        Text('What source?', style: TextStyle(fontSize: 16.0)),
+                        CupertinoSegmentedControl<int>(
+                          children: dropDownWidgets,
+                          borderColor: Colors.white,
+                          selectedColor: Colors.white38,
+                          unselectedColor: Colors.transparent,
+                          onValueChanged: (int val) {
+                            setState(() {
+                              _selectedIndex = val;
+                            });
+                          },
+                          groupValue: _selectedIndex,
+                        ),
                       ],
                     ),
                   ),
