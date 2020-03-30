@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   TextFormField(
                     controller: availableAmountController,
