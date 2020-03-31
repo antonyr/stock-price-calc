@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var sharesCountNode = FocusNode();
   var purchasableQuantity = 0;
   var normalizedPrice = '';
+  var spentMoney = '';
   bool _showResult = false;
   bool autoValidate = false;
   int _selectedIndex = 0;
@@ -229,6 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   averageCostController,
                                   currentUnitPriceController,
                                   purchasableQuantity);
+                              this.spentMoney = (double.parse(this.normalizedPrice) * this.purchasableQuantity).toStringAsFixed(2);
                             });
                             var scrollPosition = _scrollController.position;
                             _scrollController.animateTo(
@@ -281,10 +283,13 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               Text(
-                  "You can purchase a maximum of ${this.purchasableQuantity.toString()} shares",
+                  "You can purchase ${this.purchasableQuantity.toString()} shares",
                   style: TextStyle(fontSize: 16.0)),
               Text(
                   "You will have a normalized price of ${this.normalizedPrice}",
+                  style: TextStyle(fontSize: 16.0)),
+              Text(
+                  "You will be spending the amount of ${this.spentMoney}",
                   style: TextStyle(fontSize: 16.0))
             ],
           ),
