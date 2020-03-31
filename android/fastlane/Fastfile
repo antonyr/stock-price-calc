@@ -1,0 +1,28 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Submit a new Beta Build to playstore Beta"
+  lane :beta do
+    versions = google_play_track_version_codes(track: "beta")
+    version_code = versions[0]
+    puts "-------------here is the version code------------------"
+    puts version_code
+    gradle(task: 'assemble', build_type: 'Release')
+    upload_to_play_store(
+      version_code: version_code,
+      track: 'beta',
+      aab: File.expand_path('../../../', __FILE__) + '/build/app/outputs/bundle/release/app-release.aab'
+    )
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end
