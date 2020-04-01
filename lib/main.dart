@@ -70,10 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Color(0xFF7F6F7E),
           elevation: 0.0,
           title: Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Image.asset(
@@ -82,14 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 35.0,
                   fit: BoxFit.fill,
                 ),
-                SizedBox(width: 10.0),
+                SizedBox(width: 5.0),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: GradientText(widget.title,
                       gradient: LinearGradient(
                           colors: [Color(0xFFE59E03), Color(0xFFE5C500)]),
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
                       ),
                       textAlign: TextAlign.center),
                 ),
