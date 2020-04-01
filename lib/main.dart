@@ -43,8 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   var availableAmountController = TextEditingController();
   var sharesCountNode = FocusNode();
   var purchasableQuantity = 0;
-  var normalizedPrice = '';
-  var spentMoney = '';
+  var normalizedPrice = 0.0;
+  var spentMoney = 0.0;
   bool _showResult = false;
   bool autoValidate = false;
   int _selectedIndex = 0;
@@ -244,10 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   averageCostController,
                                   currentUnitPriceController,
                                   purchasableQuantity);
-                              this.spentMoney =
-                                  (double.parse(this.normalizedPrice) *
-                                          this.purchasableQuantity)
-                                      .toStringAsFixed(2);
+                              this.spentMoney = this.purchasableQuantity * double.parse(currentUnitPriceController.text);
                             });
                             FocusScope.of(context).unfocus();
                             this._showResult = true;
@@ -299,9 +296,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   "You can purchase ${this.purchasableQuantity.toString()} shares",
                   style: TextStyle(fontSize: 16.0)),
               Text(
-                  "You will have a normalized price of ${this.normalizedPrice}",
+                  "You will have a normalized price of ${this.normalizedPrice.toStringAsFixed(2)}",
                   style: TextStyle(fontSize: 16.0)),
-              Text("You will be spending the amount of ${this.spentMoney}",
+              Text(
+                  "You will be spending the amount of ${this.spentMoney.toStringAsFixed(2)}",
                   style: TextStyle(fontSize: 16.0))
             ],
           ),

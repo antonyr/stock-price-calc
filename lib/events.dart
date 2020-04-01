@@ -12,7 +12,7 @@ findNormalizedPrice(
   var newlySpentPrice = purchasableQuantity * currentStockPrice;
   var result =
       (totalPrice + newlySpentPrice) / (purchasableQuantity + purchasedShares);
-  return result.toStringAsFixed(2);
+  return result;
 }
 
 findPurchasableQuantity(availableAmountController, currentUnitPriceController) {
