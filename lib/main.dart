@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gradient_text/gradient_text.dart';
 import 'const/material_white.dart';
 import 'events.dart';
 
@@ -20,13 +21,8 @@ class MyApp extends StatelessWidget {
             focusedBorder:
                 OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
             border: OutlineInputBorder(borderSide: BorderSide()),
-//            errorStyle: TextStyle(color: Colors.red.shade900),
-//            errorBorder: OutlineInputBorder(
-//                borderSide: BorderSide(color: Colors.red.shade900)),
-//            focusedErrorBorder: OutlineInputBorder(
-//                borderSide: BorderSide(color: Colors.amberAccent)),
           )),
-      home: MyHomePage(title: 'Stock Price Calculator'),
+      home: MyHomePage(title: 'Stocker'),
     );
   }
 }
@@ -41,7 +37,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
-  ScrollController _scrollController = new ScrollController();
   var sharesCountController = TextEditingController();
   var averageCostController = TextEditingController();
   var currentUnitPriceController = TextEditingController();
@@ -74,16 +69,37 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           backgroundColor: Color(0xFF7F6F7E),
           elevation: 0.0,
-          title: Text(widget.title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFDEAF2D),
-              )),
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'assets/images/appbar-logo.png',
+                  width: 35.0,
+                  height: 35.0,
+                  fit: BoxFit.fill,
+                ),
+                SizedBox(width: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: GradientText(widget.title,
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFE59E03), Color(0xFFE5C500)]),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
         ),
         backgroundColor: Colors.transparent,
         body: SafeArea(
           child: SingleChildScrollView(
-            controller: _scrollController,
             padding: EdgeInsets.all(10.0),
             child: Form(
               key: _formKey,
@@ -211,7 +227,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           setState(() {
                             autoValidate = true;
-                            this._showResult = true;
                           });
                           if (_formKey.currentState.validate()) {
                             setState(() {
@@ -230,14 +245,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   averageCostController,
                                   currentUnitPriceController,
                                   purchasableQuantity);
-                              this.spentMoney = (double.parse(this.normalizedPrice) * this.purchasableQuantity).toStringAsFixed(2);
+                              this.spentMoney =
+                                  (double.parse(this.normalizedPrice) *
+                                          this.purchasableQuantity)
+                                      .toStringAsFixed(2);
                             });
-                            var scrollPosition = _scrollController.position;
-                            _scrollController.animateTo(
-                              scrollPosition.maxScrollExtent,
-                              curve: Curves.easeOut,
-                              duration: const Duration(milliseconds: 100),
-                            );
+                            FocusScope.of(context).unfocus();
+                            this._showResult = true;
                           }
                         },
                       ),
@@ -259,12 +273,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               averageCostController,
                               currentUnitPriceController,
                               availableAmountController);
-                          sharesCountNode.requestFocus();
+                          FocusScope.of(context).unfocus();
                         },
                       )
                     ],
                   )),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 30.0),
                   buildResult(),
                 ],
               ),
@@ -288,24 +302,14 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                   "You will have a normalized price of ${this.normalizedPrice}",
                   style: TextStyle(fontSize: 16.0)),
-              Text(
-                  "You will be spending the amount of ${this.spentMoney}",
+              Text("You will be spending the amount of ${this.spentMoney}",
                   style: TextStyle(fontSize: 16.0))
             ],
           ),
         ),
       );
     } else {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              Text("Your results will be displayed here"),
-            ],
-          ),
-        ),
-      );
+      return Card();
     }
   }
 }
